@@ -5,6 +5,7 @@ import { EyeOff, Eye } from 'lucide-react-native'
 
 
 export default function home() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [balanceVisible, setBalanceVisible] = useState(true);
 
     const toggleBalanceVisibility = () => {

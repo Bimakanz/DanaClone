@@ -1,16 +1,15 @@
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Image,
-    ScrollView,
-    Modal
+    View, Text, TextInput, TouchableOpacity, Image, ScrollView, Modal
 } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ChevronLeft, MoveRight, Plus } from 'lucide-react-native'
+import { Plus } from 'lucide-react-native'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { router } from 'expo-router'
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+
 
 export default function Wallet() {
     const [modalVisible, setModalVisible] = useState(false)
@@ -23,21 +22,46 @@ export default function Wallet() {
     // ======================
     // FORMAT UANG
     // ======================
-    const formatNumber = (input) => {
+    const formatNumber = (input: string) => {
         const cleaned = input.replace(/\D/g, '')
         return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     }
 
-    const handleAmountChange = (text) => {
+    // ======================
+    // FORMAT NOMOR TELEPON
+    // ======================
+    const formatPhoneNumber = (input: string) => {
+        // Hapus semua karakter non-digit
+        const cleaned = input.replace(/\D/g, '');
+
+        // Batasi panjang maksimal nomor telepon (misalnya 13 digit untuk Indonesia)
+        const maxLength = 13;
+        const truncated = cleaned.substring(0, maxLength);
+
+        // Tambahkan spasi setiap 4 digit
+        const formatted = truncated.replace(/(\d{4})(?=\d)/g, '$1 ');
+
+        return formatted;
+    }
+
+    const handleAmountChange = (text: string) => {
         const numeric = text.replace(/\D/g, '')
         setAmount(formatNumber(numeric))
+    }
+
+    const handlePhoneChange = (text: any) => {
+        const formatted = formatPhoneNumber(text);
+        setPhoneNumber(formatted);
     }
 
     // ======================
     // KIRIM
     // ======================
     const handleSendTransfer = () => {
-        if (!phoneNumber || !recipientName || !amount) return
+        // Hapus spasi dari nomor telepon sebelum validasi dan pengiriman
+        const cleanPhoneNumber = phoneNumber.replace(/\s/g, '');
+
+        if (!cleanPhoneNumber || !recipientName || !amount) return
 
         setModalVisible(false)
 
@@ -187,7 +211,7 @@ export default function Wallet() {
                         <TextInput
                             placeholder="Nomor telepon"
                             value={phoneNumber}
-                            onChangeText={setPhoneNumber}
+                            onChangeText={handlePhoneChange}
                             style={{
                                 backgroundColor: '#F6F9FF',
                                 borderRadius: 12,
@@ -300,7 +324,8 @@ export default function Wallet() {
                                 marginBottom: 15
                             }}
                         >
-                            <Text style={{ fontSize: 32 }}>✅</Text>
+
+                            <AntDesign name="check-circle" size={32} color="green" />
                         </View>
 
                         {/* TITLE */}
@@ -331,12 +356,15 @@ export default function Wallet() {
                                 backgroundColor: '#F6F9FF',
                                 borderRadius: 14,
                                 padding: 14,
-                                marginBottom: 18
+                                marginBottom: 18,
+                                alignItems: 'center'
                             }}
                         >
-                            <Text style={{ marginBottom: 6 }}>👤 {recipientName}</Text>
-                            <Text style={{ fontWeight: 'bold', color: '#3F8CE2' }}>
-                                💸 Rp {amount}
+                            <FontAwesome name="user" size={24} color="#3F8CE2" />
+                            <Text style={{ marginBottom: 6, fontWeight:'bold' }}>{recipientName}</Text>
+                            <FontAwesome6 name="money-check-dollar" size={24} color="#3F8CE2" />
+                            <Text style={{ fontWeight: 'bold' }}>
+                                Rp {amount}
                             </Text>
                         </View>
 
@@ -357,7 +385,7 @@ export default function Wallet() {
                             }}
                         >
                             <Text style={{ color: 'white', fontWeight: 'bold' }}>
-                                Oke, Mantap 👍
+                                Konfirmasi
                             </Text>
                         </TouchableOpacity>
 

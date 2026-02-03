@@ -123,7 +123,7 @@ export default function Wallet() {
                             bottom: 20
                         }}
                     >
-                        <Plus color="white" size={25} />
+                        <Plus color="white" size={25} />    
                     </TouchableOpacity>
                 </View>
 
@@ -160,7 +160,6 @@ export default function Wallet() {
                         width: 400,
                         height: 450,
                         borderRadius: 12,
-                        alignSelf: 'center',
                         bottom: 20
                     }}
                 />
